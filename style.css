@@ -1,0 +1,121 @@
+html, body {
+    margin: 0;
+    padding: 0;      
+}
+
+.animated {
+    background: gray url(https://subtlepatterns.com/patterns/geometry2.png) repeat 0 0;
+    width: 100%;
+    margin: 0;
+    height: 300px;
+    box-sizing: border-box;
+    -webkit-animation: slide 20s linear infinite;
+}
+
+@-webkit-keyframes slide {
+    from {
+        background-position: 0 0;    
+    }
+    to {
+        background-position: 100% 0;    
+    }
+}
+
+@-webkit-keyframes slide {
+    from {
+        background-position: 0 0;
+    }
+    to {
+        background-position: -600px 0;
+    }
+}
+
+input.ng-touched.ng-invalid {
+    border: solid 2px red;
+}
+
+#no {
+    background-color: rgb(251, 241, 204);
+}
+    
+.fail {
+    background-color: rgb(243, 216, 218);
+}
+
+#stars-outer {
+    display: inline-block;
+    position: relative;
+    font-family: FontAwesome;
+}
+
+#stars-outer::before {
+    content: "\f006 \f006 \f006 \f006 \f006";
+}
+
+#stars-inner {
+    position: absolute;
+    top: 0;
+    left: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+}
+
+#stars-inner::before {
+    content: "\f005 \f005 \f005 \f005 \f005";
+    color: #f8ce0b;
+}
+
+#modalClose, #reviewBtn, #orderBtn {
+    background-color: rgb(124, 128, 135);
+}
+
+#bloc1, #bloc2{
+    display:inline;
+}
+
+#reviewTime, #reviewRating {
+    display:inline;
+}
+    
+.glyphicon-star {
+    color: rgb(244, 217, 151);
+}
+
+#startInput, #endInput, #modeInput, #direct {
+    display:inline;
+}
+
+#details_list {
+    -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+    -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+    -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+    transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 2s;
+    position: relative;
+    left: 0%;
+}
+
+#details_list.ng-hide {
+    left: -200%;
+}
+
+#results {
+    -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
+    -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
+    -o-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
+    transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
+    position: relative;
+    right: 0%;
+}
+
+#results.ng-hide {
+    right: -100%;
+}
+
+.highlight {
+    background-color: rgb(244, 217, 151);
+}
+
+.favoring {
+    color: rgb(244, 217, 151);
+}
