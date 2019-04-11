@@ -24,16 +24,20 @@
     </head>
 
     <body class="animated">
-
+        <br><br>
         <div class="container">
-            <br>
+            <header>
+                <h1>
+                Travel and Entertainment Search
+                </h1>
+            </header>
             
             <div ng-app="myApp" ng-controller="myCtrl">
                 <div class="well">
                     
                     <form method="GET" action="" class="form-horizontal form-background" name="myForm" ng-model="myForm" ng-submit="ajaxGet($event)">
                         
-                        <h3 class="text-center">Travel and Entertainment Search</h3>
+                        <h3 class="text-center">Search your next amazing experience!</h3>
                         <br>
                         
                         <div class="form-group">
@@ -102,7 +106,7 @@
                 </div>
   
                 <div ng-model="results" id="results" ng-show="listing" class="animate-hide">
-                    <div id="no" class="well well-sm" ng-show="noRecord">No Records</div>
+                    <div id="no" class="well well-sm" ng-show="noRecord">No Records!</div>
                 </div>
   
                 <div id="falseMap">
@@ -188,8 +192,14 @@
                     </div>
                 </div>
             </div>
+            
+            <footer>
+                <hr class="socket">
+                    <span class="copyright">&copy; Designed by Rakesh Bhimappa Mali</span>
+            </footer>
+        
         </div>
-        <br><br>
+        
     </body>
     
 </html>
@@ -453,14 +463,14 @@
       $scope.disabled = false;
 
       var text = "";
-      text += '<h3 style="text-align: center"><span style="border-style: ridge">'+place.name+'</span></h3>';
-      text += '<div>';
+      text += '<br><br><h3 style="text-align: center"><span class="place-header">'+place.name+'</span></h3>';
+      text += '<br><br><br><div>';
       text += '<button type="button" class="btn btn-default pull-left" id="lists" ng-click="list()"><span class="glyphicon glyphicon-chevron-left"></span>List</button>';
       text += '<button class="btn btn-default pull-right" style="padding: 0">';
 
       text += '<a href="https://twitter.com/intent/tweet?text='+encodeURI("Check out ")+encodeURI(place.name)+encodeURI(" located at ")+encodeURI(place.formatted_address)+encodeURI(". Website: ")+'&url='+encodeURI(place.website)+'&hashtags=TravelAndEntertainmentSearch">';
 
-      text += '<img width=35px height=32px src="https://upload.wikimedia.org/wikipedia/fr/thumb/c/c8/Twitter_Bird.svg/738px-Twitter_Bird.svg.png">';
+      text += '<img width=35px height=32px src="https://upload.wikimedia.org/wikipedia/fr/thumb/c/c8/Twitter_Bird.svg/738px-Twitter_Bird.svg.png" style="margin-left:1em;">';
       text += '</a>';
       text += '</button>';
       text += '<div id="detailfav" >'
@@ -482,21 +492,49 @@
       angular.element(de).append($compile(text)($scope));
       text = '';
       text += '<div>';
+      var black=true;
       text += '<table class="table table-striped">';
       if (place.formatted_address != undefined) {
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+            black=true;
+        }
         text += '<th>Address</th>';
         text += '<td>'+place.formatted_address+'</td>';
         text += '</tr>';
       }
       if (place.international_phone_number != undefined) {
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+            black=true;
+        }
         text += '<th>Phone Number</th>';
         text += '<td>'+place.international_phone_number+'</td>';
         text += '</tr>';
       }
       if (place.price_level != undefined){
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+            black=true;
+        }
         text += '<th>Price Level</th>';
         text += '<td>';
         for (var i = 0; i < place.price_level; i++) {
@@ -506,7 +544,16 @@
         text += '</tr>';
       }
       if (place.rating != undefined) {
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+             black=true;
+        }
         text += '<th>Rating</th>';
         text += '<td>'+place.rating;
         text += '<div id="stars-outer">';
@@ -516,14 +563,32 @@
         text += '</tr>';
       }
       if (place.url != undefined) {
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+             black=true;
+        }
         text += '<th>Google Page</th>';
         // text += '<td></td>';
         text += '<td><a href='+place.url+' target="_blank">'+place.url+'</a></td>';
         text += '</tr>';
       }
       if (place.website != undefined) {
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+            black=true;
+        }
         text += '<th>Website</th>';
         // text += '<td></td>';
         text += '<td><a href='+place.website+' target="_blank">'+place.website+'</a></td>';
@@ -531,7 +596,16 @@
       }
       var modal = '';
       if (place.opening_hours != undefined) {
-        text += '<tr>';
+        if(black==true)
+        {
+            text += '<tr class="black-text">';
+            black=false;
+        }
+        else
+        {
+            text += '<tr class="white-text">';
+            black=true;
+        }
         text += '<th>Hours</th>';
         text += '<td>';
         var now = moment();
@@ -1195,7 +1269,7 @@
       // console.log(leng);
       // console.log(keys.length);
       if (keys.length == 0) {
-        text += '<div id="no" class="well well-sm">No Records</div>';
+        text += '<div id="no" class="well well-sm">No Records!</div>';
       }
       else {
         console.log(keys);
