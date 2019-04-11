@@ -4,7 +4,9 @@ html, body {
 }
 
 .animated {
-    background: gray url(https://subtlepatterns.com/patterns/geometry2.png) repeat 0 0;
+    background-color: black;
+    color: white;
+    background: url(https://i.pinimg.com/originals/d9/40/20/d940201d892dc4f18982bc3e22d17e41.jpg);
     width: 100%;
     margin: 0;
     height: 300px;
@@ -12,6 +14,23 @@ html, body {
     -webkit-animation: slide 20s linear infinite;
 }
 
+.container
+{
+ padding-top: 100px;
+ min-height: 90vh;
+ overflow: hidden;
+ display: block;
+ position: relative;
+ padding-bottom: 100px; 
+}
+  
+.container h1 {
+    text-shadow: 1px 1px 2px black, 0 0 25px red, 0 0 15px yellow;
+}
+
+.form-background{
+    color: black;
+}
 @-webkit-keyframes slide {
     from {
         background-position: 0 0;    
@@ -35,6 +54,7 @@ input.ng-touched.ng-invalid {
 }
 
 #no {
+    color: black;
     background-color: rgb(251, 241, 204);
 }
     
@@ -66,8 +86,17 @@ input.ng-touched.ng-invalid {
     color: #f8ce0b;
 }
 
+.modal-title{
+    color: #0000EE;
+}
+
+.modal-body{
+    color: black;
+}
 #modalClose, #reviewBtn, #orderBtn {
-    background-color: rgb(124, 128, 135);
+    background-color: rgb(255, 255, 255);
+    color: black;
+    
 }
 
 #bloc1, #bloc2{
@@ -99,6 +128,10 @@ input.ng-touched.ng-invalid {
     left: -200%;
 }
 
+#detailsFavor, #details{
+    background-color: white !important;
+}
+
 #results {
     -webkit-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
     -moz-transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 1s;
@@ -113,9 +146,59 @@ input.ng-touched.ng-invalid {
 }
 
 .highlight {
+    color: black;
     background-color: rgb(244, 217, 151);
 }
 
 .favoring {
     color: rgb(244, 217, 151);
+}
+
+.black-text
+{
+    color: black;
+}
+
+.white.text
+{
+    color: white;
+}
+
+#mapFigure, #routePanel
+{
+    background-color: white;
+}
+
+#reviewSectionPanel {
+    color: black;
+}
+
+.place-header{
+    border-style: ridge;
+    border-radius: 10%;
+    margin: 30px;
+    padding: 10px;
+    color: black;
+    font-weight: 500;
+    background-color: white;
+}
+
+.socket
+{
+    width: 100%;
+    border-top: 0.2rem solid #666b71;
+}
+
+header {
+    margin-top: 10;
+    text-align: center;
+    position:absolute;
+    top: 0;
+    width: 100%;
+}
+footer {
+    text-align: center;
+ position: absolute;
+ bottom: 0;
+ width: 100%;
 }
