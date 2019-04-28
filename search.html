@@ -210,7 +210,6 @@
 <script text = "text/javascript">
 
   var app = angular.module("myApp", ['ngAnimate']);
-  // local_index = 0;
   detailLoc = "";
   text_store = [];
   data_final = [];
@@ -736,14 +735,9 @@
       de.innerHTML = "";
       angular.element(de).append($compile(text)($scope));
       text = '';
-      // text += '<li><a href="#">Something else here</a></li>';
-      // text += '<li role="separator" class="divider"></li>';
       reviews[0] = place.reviews;
       default_reviews = reviews[0].slice();
       curr_reviews = default_reviews.slice();
-      // console.log("curr_Reviews=");
-      // console.log(curr_reviews);
-      // curr_reviews = default_reviews;
       orderMode = 0;
       reviewMode = true;
       var addrs = place.formatted_address.split(", ");
@@ -756,7 +750,6 @@
       var url_yelp = "http://rmali.us-east-2.elasticbeanstalk.com/yelp?"+"name="+place.name+"&address1="+ad1+"&address2="+ad2+"&city="+city+"&state="+state+"&country="+country;      
       $http.get(encodeURI(url_yelp))
       .then(function(response) {
-        // var data = response.data;
         console.log(response);
         if (response == "error") {
           $scope.errorDisplay();
@@ -769,8 +762,6 @@
       })
 
       displayReviews();
-      // text += '</div>';
-
     }
 
 
@@ -781,9 +772,6 @@
 
     function displayReviews() {
       curr_reviews = default_reviews.slice();
-
-      // console.log(curr_reviews);
-      // console.log(reviewMode);
       var text = '';
       if (reviewMode) {
         default_reviews = reviews[0].slice();
@@ -795,17 +783,12 @@
         curr_reviews = default_reviews.slice();
         text = displayYelp();
       }
-
-      // return text;
       de = document.getElementById("reviewSectionPanel");
       de.innerHTML = "";
       angular.element(de).append($compile(text)($scope));
-      // var de = document.getElementById("reviewPanelContent");
-      // de.innerHTML = text;
     }
 
     function displayYelp() {
-      // console.log()
       var text = '';
       if (curr_reviews.length == 0) {
         text += '<div id="no" class="well well-sm">No Records</div>';
@@ -813,14 +796,9 @@
       else {
         switch(orderMode) {
           case 0:
-            // console.log("0");
             break;
           case 1:
-            // console.log("1");
-            // curr_reviews = default_reviews;
             function compare1(a,b) {
-              // console.log(a.rating);
-              // console.log(b.rating);
               if (a.rating < b.rating)
                 return 1;
               if (a.rating > b.rating)
@@ -830,8 +808,6 @@
             curr_reviews.sort(compare1);
             break;
           case 2:
-            console.log("2");
-            // curr_reviews = default_reviews;
             function compare2(a,b) {
               if (a.rating < b.rating)
                 return -1;
@@ -842,27 +818,20 @@
             curr_reviews.sort(compare2);
             break;
           case 3:
-            // console.log("3");
-            // curr_reviews = default_reviews;
             function compare3(a,b) {
               return -(moment(a.time_created).diff(moment(b.time_created)));
             }
-              curr_reviews.sort(compare3);
+            curr_reviews.sort(compare3);
             break;
           case 4:
-            // console.log("4");
-            // curr_reviews = default_reviews;
             function compare4(a,b) {
               return (moment(a.time_created).diff(moment(b.time_created)));
             }
-              curr_reviews.sort(compare4);
+            curr_reviews.sort(compare4);
             break;
         }
-        // console.log("orderMode="+orderMode);
         console.log(curr_reviews);
-        // var text = '';
         for (var i = 0; i < curr_reviews.length; i++) {
-          // console.log("i="+i);
           text += '<div class="panel panel-default">';
           text += '<div class="panel-body">';
           text += '<div id="bloc1"  class="col-sm-1 col-xs-2">'//user photo div
@@ -904,14 +873,9 @@
       else {
         switch(orderMode) {
           case 0:
-            // console.log("0");
             break;
           case 1:
-            // console.log("1");
-            // curr_reviews = default_reviews;
             function compare1(a,b) {
-              // console.log(a.rating);
-              // console.log(b.rating);
               if (a.rating < b.rating)
                 return 1;
               if (a.rating > b.rating)
@@ -921,8 +885,6 @@
             curr_reviews.sort(compare1);
             break;
           case 2:
-            // console.log("2");
-            // curr_reviews = default_reviews;
             function compare2(a,b) {
               if (a.rating < b.rating)
                 return -1;
@@ -933,8 +895,6 @@
             curr_reviews.sort(compare2);
             break;
           case 3:
-            // console.log("3");
-            // curr_reviews = default_reviews;
             function compare3(a,b) {
               if (a.time < b.time)
                 return 1;
@@ -945,8 +905,6 @@
             curr_reviews.sort(compare3);
             break;
           case 4:
-            // console.log("4");
-            // curr_reviews = default_reviews;
             function compare4(a,b) {
               if (a.time < b.time)
                 return -1;
@@ -957,11 +915,7 @@
             curr_reviews.sort(compare4);
             break;
         }
-        // console.log("orderMode="+orderMode);
-        // console.log(curr_reviews);
-        // var text = '';
         for (var i = 0; i < curr_reviews.length; i++) {
-          // console.log("i="+i);
           text += '<div class="panel panel-default">';
           text += '<div class="panel-body">';
           text += '<div id="bloc1"  class="col-sm-1 col-xs-2">'//user photo div
@@ -999,7 +953,6 @@
       var re = document.getElementById("orderBtn");
       text = "Default Order <span class=\"caret\"></span>";
       re.innerHTML = text;
-      // angular.element(re).append($compile(text)($scope));
       orderMode = 0;
       displayReviews();
     }
@@ -1008,7 +961,6 @@
       var re = document.getElementById("orderBtn");
       text = "Highest Rating <span class=\"caret\"></span>";
       re.innerHTML = text;
-// angular.element(re).append($compile(text)($scope));
       orderMode = 1;
       displayReviews();
     }
@@ -1017,7 +969,6 @@
       var re = document.getElementById("orderBtn");
       text = "Lowest Rating <span class=\"caret\"></span>";
       re.innerHTML = text;
-      // angular.element(re).append($compile(text)($scope));
       orderMode = 2;
       displayReviews();
     }
@@ -1026,7 +977,6 @@
       var re = document.getElementById("orderBtn");
       text = "Most Recent <span class=\"caret\"></span>";
       re.innerHTML = text;
-      // angular.element(re).append($compile(text)($scope));
       orderMode = 3;
       displayReviews();
     }
@@ -1035,7 +985,6 @@
       var re = document.getElementById("orderBtn");
       text = "Least Recent <span class=\"caret\"></span>";
       re.innerHTML = text;
-      // angular.element(re).append($compile(text)($scope));
       orderMode = 4;
       displayReviews();
     }
@@ -1044,7 +993,6 @@
       var re = document.getElementById("reviewBtn");
       text = "Google Reviews <span class=\"caret\"></span>";
       re.innerHTML = text;
-      // angular.element(re).append($compile(text)($scope));
       default_reviews = reviews[0].slice();
       curr_reviews = default_reviews.slice();
       reviewMode = true;
@@ -1060,7 +1008,6 @@
       console.log(curr_reviews);
       reviewMode = false;
       displayReviews();
-      // angular.element(re).append($compile(text)($scope));
     }
 
     $scope.loc1click = function() {
@@ -1075,7 +1022,6 @@
     }
 
     $scope.showInfo = function() {
-      // console.log("showInfo");
       $scope.infoShow = true;
       $scope.photosShow = false;
       $scope.mapShow = false;
@@ -1131,17 +1077,11 @@
     }
 
     $scope.showDetail = function() {
-      // console.log("showDetail");
       $scope.listing = false;
       $scope.detailing = true;
     }
 
-    // $scope.checkDetail = function() {
-    //   return document.getElementById("details_list").innerHTML != "";
-    // }
-
     $scope.resultList = function() {
-      // curr_list_page = page;
       curr_list_mode = true;
       document.getElementById("favorites").style.color = "rgb(66, 121, 178)";
       document.getElementById("favorites").style.backgroundColor = "white";
@@ -1150,25 +1090,16 @@
       $scope.list();
       var re = document.getElementById("results");
       var text = "";
-      // console.log(text_store);
       if (data_final.length == 0) {
         text += '<div id="no" class="well well-sm">No Records</div>';
       }
       else {
         var data = data_final[curr_list_page-1];
-        // console.log("resultList");
-        // console.log(data);
         getTable(data, curr_list_page);
-        // text += text_store[curr_list_page-1];
       }
-      // re.innerHTML = text;
-      // re.innerHTML = "";
-      // angular.element(re).append($compile(text)($scope));
     }
 
     function getTable(data, page) {
-      // console.log(page);
-
       data_final[page-1] = data;
       curr_list_page = page;
       curr_list_mode = true;
@@ -1441,24 +1372,12 @@
             else {
               $scope.errorDisplay();
             }
-            // console.log(data);
-            // var text_store = [];
-            // getTable(data, 1);
           })
-          // $.get(url, function(data) {
-          //   console.log(data);
-          //   getTable(data, page);
-          //   $scope.loading = false;
-          // })
-        // }
-        // var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken="+token+"&key=AIzaSyBS5__9nDT0zRq19rwkhWdkw3JSA6QNaWE";
       }
       var input1 = document.getElementById('loc3');
       var input2 = document.getElementById('start');
       autocomplete1 = new google.maps.places.Autocomplete(input1);
       autocomplete2 = new google.maps.places.Autocomplete(input2);
-      // var searchBox1 = new google.maps.places.SearchBox(document.getElementById('loc3'));
-      // var searchBox2 = new google.maps.places.SearchBox(document.getElementById('start'));
   })
 
 
