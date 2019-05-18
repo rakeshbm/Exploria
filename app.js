@@ -6,39 +6,65 @@ var url = require('url');
 var EventEmitter = require("events").EventEmitter;
 var request = require('request');
 'use strict';
+const helmet = require('helmet');
+const csp = require('helmet-csp');
+var session = require('express-session');
+var validator = require('express-validator');
 
-
+app.set('trust proxy', 1);
 
 app.use(express.static(__dirname));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
+app.use(validator());
+app.use(function(req, res, next) {
+  for (var item in req.body) {
+    req.sanitize(item).escape();
+  }
+  next();
+});
+app.use(helmet.hsts({
+  maxAge: 7776000000,
+  includeSubdomains: true
+}));
+app.use(csp({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ['*.google-analytics.com'],
+    styleSrc: ["'unsafe-inline'"],
+    imgSrc: ['*.google-analytics.com'],
+    connectSrc: ["'none'"],
+    fontSrc: ["'self'"],
+    objectSrc: ["'none'"]
+  }
+}));
+app.use(session({
+  secret: 'hidden sess',
+  cookie: {
+    maxAge: 3600000,
+    secure: true,
+    httpOnly: true
+  }
+}));
 
 app.get('/next', (req, res) => {
   res.setHeader('Content-Type', "application/json");
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
   var bd = new EventEmitter();
-  // console.log(req.query);
   var token = req.query.token;
-  // console.log(token);
   var url3 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken="+token+"&key=AIzaSyAiR9M-WgtlwdnVInIPg6KBs96qoFf1tS4";
   https.get(url3, res3 => {
-    // console.log(url3);
     res3.setEncoding("utf8");
-    // res3.setHeader('Content-Type', "application/json");
-    // res3.header("Access-Control-Allow-Origin", "*");
-    // res3.header("Access-Control-Allow-Headers", "X-Requested-With");
     var html = "";
     var tmp = {};
     res3.on("data", data => {
       html += data;
-      // console.log(data);
     });
     res3.on("end", () => {
       html = JSON.parse(html);
       var resu = html.results;
       var length = resu.length;
-      // result['token'] = "";
       tmp['places'] = [];
       tmp['token'] = "";
       if (html.next_page_token != 'undefined') {
@@ -58,7 +84,7 @@ app.get('/next', (req, res) => {
   })
   bd.on('update', function() {
     res.send(bd.result);
-  })
+  });
 })
 
 app.get('/yelp', (req, res) => {
@@ -74,7 +100,7 @@ app.get('/yelp', (req, res) => {
   var state = que.state;
   var country = que.country;
   var headers = {
-    // 'Access-Control-Allow-Origin': 'http://localhost:8081/',
+    'Access-Control-Allow-Origin': 'http://localhost:8081/',
     'Authorization': 'Bearer Qy-YxhQ8MycJw68-woih7f5YG9CuCiWpyQsau32mLiYECsh3eLM5cXb_TzMFrDbKRrPZl2abzrq2D51tsKUOiifA6XGontfXj2zj-DHjIabW2m8fYLE_EOmOyEmZXHYx'
   };
 
@@ -94,7 +120,7 @@ app.get('/yelp', (req, res) => {
     // response.header("Access-Control-Allow-Origin", "*");
     // response.header("Access-Control-Allow-Headers", "X-Requested-With");
     // console.log(response.jsonBody.businesses);
-    console.log(response);
+    //console.log(response);
     if (response.jsonBody.businesses.length != 0) {
       yelpReviews(response.jsonBody.businesses[0].id);
     }
@@ -104,6 +130,7 @@ app.get('/yelp', (req, res) => {
   }).catch(e => {
     res.send("error");
   });
+
   function yelpReviews(id) {
     const yelpR = require('yelp-fusion');
     const clientR = yelpR.client(apiKey);
@@ -114,7 +141,7 @@ app.get('/yelp', (req, res) => {
       // responseR.header("Access-Control-Allow-Headers", "X-Requested-With");
     // console.log(responseR.jsonBody.reviews);
     bd.result = responseR.jsonBody.reviews;
-    console.log(bd.result);
+    //console.log(bd.result);
     bd.emit('update');
     }).catch(e => {
       // console.log(e);
@@ -123,7 +150,7 @@ app.get('/yelp', (req, res) => {
   }
   bd.on('update', function() {
     res.send(bd.result);
-  })
+  });
 })
 
 app.get('/messages', (req, res) => {
@@ -137,8 +164,8 @@ app.get('/messages', (req, res) => {
   var category = que.category.toLowerCase();
   var distance = (que.distance == 'undefined') ? 16093.44 : que.distance*1609.344;
   var location = que.location;
-  var lon = que.lon;
-  var lat = que.lat;
+  var lon = parseFloat(que.lon);
+  var lat = parseFloat(que.lat);
   var bd = new EventEmitter();
   // console.log(location);
   // console.log(lon);
@@ -167,7 +194,6 @@ app.get('/messages', (req, res) => {
         rr += data;
       });
       res2.on("end", () => {
-        // console.log(rr);
         rr = JSON.parse(rr);
         var resu = rr.results;
         var length = resu.length;
@@ -187,7 +213,6 @@ app.get('/messages', (req, res) => {
           result.places[i]['place_id'] = resu[i]['place_id'];
           result.places[i]['location'] = resu[i]['geometry']['location'];
         }
-        // console.log(result);
         bd.result = result;
         bd.emit('update');
       })
@@ -197,10 +222,6 @@ app.get('/messages', (req, res) => {
   function unde(distance, category, keyword) {
     var url1 = "https://maps.googleapis.com/maps/api/geocode/json?address="+location+"&key=AIzaSyAiR9M-WgtlwdnVInIPg6KBs96qoFf1tS4";
     https.get(url1, res1 => {
-      // res1.setHeader('Content-Type', "application/json");
-      // res1.header("Access-Control-Allow-Origin", "*");
-      // res1.header("Access-Control-Allow-Headers", "X-Requested-With");
-      // console.log(res1);
       res1.setEncoding("utf8");
       var body = "";
       res1.on("data", data => {
@@ -208,9 +229,8 @@ app.get('/messages', (req, res) => {
       });
       res1.on("end", () => {
         body = JSON.parse(body);
-        // console.log(body);
-        var lon = body.results[0].geometry.location.lng;
-        var lat = body.results[0].geometry.location.lat;
+        var lon = parsefloat(body.results[0].geometry.location.lng);
+        var lat = parseFloat(body.results[0].geometry.location.lat);
         de(lat, lon, distance, category, keyword);
       })
     })
