@@ -2,9 +2,9 @@
 <html lang="en">
 
     <head>
-    
+
         <title>Travel and Entertainment Search</title>
-        
+
         <link href="style.css" rel="stylesheet" type="text/css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
         <meta charset="utf-8">
@@ -31,15 +31,15 @@
                 Travel and Entertainment Search
                 </h1>
             </header>
-            
+
             <div ng-app="myApp" ng-controller="myCtrl">
                 <div class="well">
-                    
+
                     <form method="GET" action="" class="form-horizontal form-background" name="myForm" ng-model="myForm" ng-submit="ajaxGet($event)">
-                        
+
                         <h3 class="text-center">Search your next amazing experience!</h3>
                         <br>
-                        
+
                         <div class="form-group">
                             <label for="keyword" class="control-label col-md-offset-2 col-md-1">Keyword</label>
                             <div class="col-md-offset-1 col-md-7">
@@ -47,7 +47,7 @@
                                 <p style="color:red" ng-show="myForm.keyword.$touched && myForm.keyword.$invalid"  ng-cloak>Please enter a keyword.</p>
                             </div>
                         </div>
-    
+
                         <div class="form-group">
                             <label for="category" class="control-label col-md-offset-2 col-md-1">Category</label>
                             <div class="col-md-offset-1 col-md-4">
@@ -55,14 +55,14 @@
                                 </select>
                             </div>
                         </div>
-    
+
                         <div class="form-group">
                             <label for="distance" class="control-label col-md-offset-2 col-md-1">Distance(miles)</label>
                             <div class="col-md-offset-1 col-md-4">
                                 <input type="text" class="form-control" ng-model="distance" placeholder="10" name="distance">
                             </div>
                         </div>
-    
+
                         <div class="form-group">
                             <label for="location" class="control-label col-md-offset-2 col-md-1">From</label>
                             <div ng-model="location" ng-init="loc1='true'">
@@ -80,38 +80,38 @@
                                 </div>
                             </div>
                         </div>
-    
+
                         <input type="hidden" name="lat" ng-model="lat" required>
                         <input type="hidden" name="lon" ng-model="lon" required>
-    
+
                         <button type="submit" ng-model="search" name="search" class="btn btn-primary col-md-offset-2" ng-disabled="myForm.keyword.$invalid || (loc1=='false' && myForm.loc3.$invalid) || myForm.lat.$invalid || myForm.lon.$invalid">
                             <span class="glyphicon glyphicon-search"></span> Search
                         </button>
-    
+
                         <button type="reset" class="btn btn-default" ng-click="reset()">Clear</button>
-                
+
                     </form>
 
                 </div>
-  
+
                 <div class="text-center">
                     <button type="button" class="btn btn-primary" id="resultBtn" ng-click="resultList()">Results</button>
                     <button type="button" class="btn" style="color: rgb(66, 121, 178)" id="favorites" ng-click="favorBefore()">Favorites</button>
                 </div>
-                
+
                 <br>
-  
+
                 <div ng-show="loading" class="progress" ng-cloak>
                     <div class="progress-bar progress-bar-striped" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
-  
+
                 <div ng-model="results" id="results" ng-show="listing" class="animate-hide">
                     <div id="no" class="well well-sm" ng-show="noRecord">No Records!</div>
                 </div>
-  
+
                 <div id="falseMap">
                 </div>
-  
+
                 <div ng-model="details_list" id="details_list" ng-show="detailing" class="animate-hide">
                     <div id="detailHeading" ng-model="detailHeading">
                     </div>
@@ -130,7 +130,7 @@
                     </div>
                     <div id="mapSection"  ng-show="mapShow">
                         <div>
-                            
+
                             <form method="GET" action="" name="directionForm" ng-model="directionForm" style="padding: 0" ng-submit="getDirection($event)">
                                 <div class="form-group col-md-4 col-xs-12" id="startInput">
                                     <label for="start">From</label>
@@ -174,7 +174,7 @@
                                     <button type="submit" ng-model="direct" id="direct" name="direct" class="btn btn-primary" ng-disabled="directionForm.start.$invalid">Get Directions</button>
                                 </div>
                             </form>
-      
+
                         </div>
                         <div id="streetView" class="form-group">
                         </div>
@@ -192,16 +192,16 @@
                     </div>
                 </div>
             </div>
-            
+
             <footer>
                 <hr class="socket">
                     <span class="copyright">&copy; Designed by Rakesh Bhimappa Mali</span>
             </footer>
-        
+
         </div>
-        
+
     </body>
-    
+
 </html>
 
 
@@ -210,6 +210,7 @@
 <script text = "text/javascript">
 
   var app = angular.module("myApp", ['ngAnimate']);
+
   detailLoc = "";
   text_store = [];
   data_final = [];
@@ -236,9 +237,9 @@
     $scope.disabled = true;
     $http.get("http://ip-api.com/json?callback=")
     .then(function(response) {
-      $scope.lat = response.data.lat;
-      $scope.lon = response.data.lon;
-    })
+      $scope.lat = parseFloat(response.data.lat);
+      $scope.lon = parseFloat(response.data.lon);
+    }).catch(angular.noop);
     $scope.reset = function() {
       detailLoc = "";
       $scope.formData = {};
@@ -288,7 +289,7 @@
       text += '<button class="btn btn-default" style="padding: 0" ng-click="googleMap('+lat+', '+lng+')">';
       text += '<img width="35px" height="32px" src="https://www.iosicongallery.com/icons/google-maps-2014-11-12/512.png">';
       text += '</button>';
-      // console.log("street");
+
       de = document.getElementById("streetView");
       de.innerHTML = "";
       angular.element(de).append($compile(text)($scope));
@@ -296,12 +297,12 @@
 
     $scope.googleMap = function(lat, lng) {
       var dest = {lat: lat, lng: lng};
-      console.log(dest);
+      //console.log(dest);
       var map = new google.maps.Map(document.getElementById("mapFigure"), {
         zoom: 15,
         center: dest
       });
-      // console.log(map);
+
       var marker = new google.maps.Marker({
         position: dest,
         map: map
@@ -316,7 +317,7 @@
     }
 
     $scope.getDirection = function(e) {
-      // console.log(document.getElementById("start").value);
+
       var startP = (document.getElementById("start").value == "Your Location") ? {lat: $scope.lat, lng: $scope.lon} : document.getElementById("start").value;
       var endP = document.getElementById("end").value;
       var travelRequest =
@@ -387,7 +388,6 @@
       curr_place = {};
       $http.get(url)
       .then(function(response) {
-        console.log(response);
         if (response.statusText == "OK") {
           var data = response.data;
           $scope.loading = false;
@@ -401,8 +401,7 @@
         else {
           $scope.errorDisplay();
         }
-
-      })
+      }).catch(angular.noop);
       e.preventDefault();
     }
 
@@ -441,13 +440,13 @@
       var request = {
         placeId: id
       };
-            // console.log('details', id);
+
       var service = new google.maps.places.PlacesService($('#falseMap').get(0));
       service.getDetails(request, callback);
       function callback(place, status) {
-              // console.log(status);
+
       if (status == google.maps.places.PlacesServiceStatus.OK) {
-        console.log(place);
+        //console.log(place);
         detailTable(place);
         curr_place = place
         }
@@ -608,10 +607,10 @@
         text += '<th>Hours</th>';
         text += '<td>';
         var now = moment();
-        // console.log(now.utcOffset());
+
         now.utcOffset(place.utc_offset);
         var day = (now.day()-1 < 0) ? 6 : now.day()-1;
-        // console.log(day);
+
         if (place.opening_hours.open_now) {
           var ind = place.opening_hours.weekday_text[day].indexOf(":");
           text += 'Open now:'+place.opening_hours.weekday_text[day].slice(ind+1)+' ';
@@ -666,7 +665,7 @@
       text = '';
 
       text += '<div>';
-      // text += 'photos';
+
       if (place.photos == undefined) {
         text += '<div id="no" class="well well-sm">No Records</div>';
       }
@@ -698,13 +697,11 @@
       document.getElementById("start").value = "Your Location";
 
       document.getElementById("direct").disabled = false;
-      // text += '<form action="" onsubmit="getDirection()">';
+
       var endPoint = place.name+", "+place.formatted_address;
       document.getElementById("end").value=endPoint;
-      // text += '<div>';
-      // text += '</div>';
-      // console.log(place.geometry.location.lat(), place.geometry.location.lng())
-      $scope.googleMap(place.geometry.location.lat(), place.geometry.location.lng());
+
+      $scope.googleMap(parseFloat(place.geometry.location.lat()), parseFloat(place.geometry.location.lng()));
 
 
       text += '<div>';
@@ -735,9 +732,11 @@
       de.innerHTML = "";
       angular.element(de).append($compile(text)($scope));
       text = '';
+
       reviews[0] = place.reviews;
       default_reviews = reviews[0].slice();
       curr_reviews = default_reviews.slice();
+
       orderMode = 0;
       reviewMode = true;
       var addrs = place.formatted_address.split(", ");
@@ -746,11 +745,11 @@
       var city = addrs[1];
       var state = (addrs[2].split(" "))[0];
       var country = "US";
-      console.log(addrs);
-      var url_yelp = "http://rmali.us-east-2.elasticbeanstalk.com/yelp?"+"name="+place.name+"&address1="+ad1+"&address2="+ad2+"&city="+city+"&state="+state+"&country="+country;      
+      //console.log(addrs);
+      var url_yelp = "http://rmali.us-east-2.elasticbeanstalk.com/yelp?"+"name="+place.name+"&address1="+ad1+"&address2="+ad2+"&city="+city+"&state="+state+"&country="+country;
       $http.get(encodeURI(url_yelp))
       .then(function(response) {
-        console.log(response);
+        //console.log(response);
         if (response == "error") {
           $scope.errorDisplay();
         }
@@ -759,9 +758,10 @@
         }
 
 
-      })
+      }).catch(angular.noop);
 
       displayReviews();
+
     }
 
 
@@ -821,16 +821,16 @@
             function compare3(a,b) {
               return -(moment(a.time_created).diff(moment(b.time_created)));
             }
-            curr_reviews.sort(compare3);
+              curr_reviews.sort(compare3);
             break;
           case 4:
             function compare4(a,b) {
               return (moment(a.time_created).diff(moment(b.time_created)));
             }
-            curr_reviews.sort(compare4);
+              curr_reviews.sort(compare4);
             break;
         }
-        console.log(curr_reviews);
+
         for (var i = 0; i < curr_reviews.length; i++) {
           text += '<div class="panel panel-default">';
           text += '<div class="panel-body">';
@@ -1005,7 +1005,7 @@
       re.innerHTML = text;
       default_reviews = reviews[1].slice();
       curr_reviews = default_reviews.slice();
-      console.log(curr_reviews);
+      //console.log(curr_reviews);
       reviewMode = false;
       displayReviews();
     }
@@ -1101,10 +1101,10 @@
     }
 
     function getTable(data, page) {
+
       data_final[page-1] = data;
       curr_list_page = page;
       curr_list_mode = true;
-      // console.log(data_final[page-1].places[1].id);
       var re = document.getElementById("results");
       var text = "";
 
@@ -1113,11 +1113,7 @@
       }
       else {
         var leng = data.places.length;
-        // console.log("getTable");
-        // console.log(data);
         text += '<div style="text-align: right">';
-        // var able = curr_list_page==0;
-        // console.log(detailLoc.length);
         text += '<button type="button" class="btn btn-default" ng-model="details" ng-disabled="disabled" ng-click="showDetail()" id="details">Details<span class="glyphicon glyphicon-chevron-right"></span></button>';
         text += '</div>';
         text += '<div style="overflow-x:auto;">';
@@ -1134,8 +1130,6 @@
         text += '</thead>';
         text += '<tbody>';
         for (var i = 1; i <= leng; i++) {
-          // var place_id = JSON.stringify(data_final[page-1].places[i-1].id);
-          // console.log(place_id);
           if (data.places[i-1].place_id == curr_id) {
             text += '<tr id="'+data.places[i-1].place_id+'" style="height: 30px" class="highlight">';
           }
@@ -1148,8 +1142,6 @@
           text += '<td style="min-width:400px">'+data.places[i-1].vicinity+'</td>';
           // data_final[page-1].places[this.parentNode.parentNode.id]
           var keys = JSON.parse(localStorage.getItem("keys"));
-          // console.log(keys);
-          // console.log(keys.includes(data.places[i-1].place_id));
 
           if (keys == null || !keys.includes(data.places[i-1].place_id)) {
             text += '<td><button type="button" class="btn btn-default" ng-click="favorsList('+(page-1)+', '+(i-1)+')"><span class="unfavoring glyphicon glyphicon-star-empty"></span></button></td>';
@@ -1158,7 +1150,6 @@
             text += '<td><button type="button" class="btn btn-default favoring" ng-click="unfavorsList('+(page-1)+', '+(i-1)+')"><span class="favoring glyphicon glyphicon-star"></span></button></td>';
           }
           text += '<td><button type="button" class="btn btn-default" ng-click="placeDetail('+(page-1)+', '+(i-1)+')"><span class="glyphicon glyphicon-chevron-right"></span></button></td>';
-          // text += '<td><button type="button" class="btn btn-default" ng-click="placeDetail(data_final['+(page-1)+'].places['+(i-1)+'])"><span class="glyphicon glyphicon-chevron-right"></span></button></td>';
           text += '</tr>';
         }
         text += '</tbody>';
@@ -1176,7 +1167,6 @@
       }
       re.innerHTML = "";
       angular.element(re).append($compile(text)($scope));
-      // re.innerHTML = $compile(text)($scope);
     }
 
     $scope.favorBefore = function() {
@@ -1198,17 +1188,15 @@
         keys = [];
       }
       var text = "";
-      // console.log(leng);
-      // console.log(keys.length);
+
       if (keys.length == 0) {
         text += '<div id="no" class="well well-sm">No Records!</div>';
       }
       else {
-        console.log(keys);
+        //console.log(keys);
         var leng = (keys.length > 20*page) ? 20 : keys.length-20*(page-1);
         text += '<div style="text-align: right">';
-        // console.log(curr_list_page==0);
-        // console.log(detailLoc);
+
         text += '<button type="button" class="btn btn-default" id="detailsFavor" ng-click="showDetail()"  ng-model="details" ng-disabled="disabled">Details<span class="glyphicon glyphicon-chevron-right"></span></button>';
         text += '</div>';
         text += '<div style="overflow-x:auto;">';
@@ -1225,34 +1213,30 @@
         text += '</thead>';
         text += '<tbody>';
         for (var i = 1; i <= leng; i++) {
-          // console.log(JSON.parse(localStorage.getItem("key")));
           var key = keys[20*(page-1)+i-1];
           if (key != null) {
             var ob = JSON.parse(localStorage.getItem(key));
-            console.log(key);
-            console.log(ob);
+            //console.log(key);
+            //console.log(ob);
             text += '<tr id="'+key+'" style="height: 30px">';
             text += '<th scope="row" style="height: 30px">'+i+'</th>';
             text += '<td><img src='+ ob.icon+' alt="category_pic"  style="height: 30px"></td>';
             text += '<td style="min-width:400px">'+ob.name+'</td>';
             text += '<td style="min-width:400px">'+ob.vicinity+'</td>';
-            // data_final[page-1].places[this.parentNode.parentNode.id]
             text += '<td><button type="button" class="btn btn-default" ng-click="unfavors('+i+', '+page+')"><span class="glyphicon glyphicon-trash"></span></button></td>';
             text += '<td><button type="button" class="btn btn-default" ng-click="favorDetail('+(page-1)+', '+(i-1)+')"><span class="glyphicon glyphicon-chevron-right"></span></button></td>';
             text += '</tr>';
           }
-          console.log(page);
-          console.log(i);
-          console.log(leng);
+          //console.log(page);
+          //console.log(i);
+          //console.log(leng);
 
         }
         text += '</tbody>';
         text += '</table>';
         text += '</div>';
         text += '<div style="text-align: center">';
-        // if (localStorage.length > 20) {
-        //   text += '<button type="button" class="btn btn-default" style="width: 100px" onclick="prePage('+(page-1)+')">Previous</button>';
-        // }
+
         if (keys.length > 20*page) {
           text += '<button type="button" class="btn btn-default" style="width: 100px" ng-click="favorTable('+(page+1)+')">Next</button>';
         }
@@ -1260,7 +1244,6 @@
           text += '<button type="button" class="btn btn-default" style="width: 100px" ng-click="favorTable('+(page-1)+')">Previous</button>';
         }
         text += '</div>';
-        // text_store[page-1] = text;
       }
       re.innerHTML = "";
       angular.element(re).append($compile(text)($scope));
@@ -1287,7 +1270,6 @@
     }
 
     $scope.favorsdetail = function() {
-      // console.log(document.getElementById("detailfav").parentNode);
       document.getElementById("detailfav").innerHTML = '<button type="button" class="btn btn-default pull-right" ng-click="unfavorsdetail()"><span class="glyphicon glyphicon-star favoring"></span></button>';
       $scope.favors(curr_place);
     }
@@ -1298,13 +1280,9 @@
     }
 
     $scope.favors = function(place) {
-      // place = JSON.parse(place);
-      // console.log(place);
-      // console.log(localStorage.getItem(place.place_id));
+
       if (localStorage.getItem(place.place_id) == null) {
-        // console.log(place);
         localStorage.setItem(place.place_id, JSON.stringify(place));
-        // console.log(localStorage.getItem("keys"));
         if(localStorage.getItem("keys") != null) {
           var keys = JSON.parse(localStorage.getItem("keys"));
         }
@@ -1312,15 +1290,11 @@
           var keys = [];
         }
         keys.push(place.place_id);
-        // console.log(keys);
         localStorage.setItem("keys", JSON.stringify(keys));
-        // console.log(localStorage.getItem("keys"));
       }
     }
 
       $scope.unfavors = function(id, page) {
-        // console.log(JSON.parse(localStorage.getItem(id)));
-        // console.log('unfavors', id, page);
         var keys = JSON.parse(localStorage.getItem("keys"));
         var key = keys[20*(page-1)+id-1];
         var ind = keys.indexOf(key);
@@ -1336,44 +1310,29 @@
         keys.splice(ind, 1);
         localStorage.removeItem(key);
         localStorage.setItem("keys", JSON.stringify(keys));
-        // $scope.favorTable(page);
       }
 
       $scope.prePage = function(page) {
-        // console.log(page);
-        // console.log("pre", page);
         curr_list_page = page;
         var data = data_final[page-1];
         getTable(data, page);
-        // var re = document.getElementById("results");
-        // var text = text_store[page-1];
-        // re.innerHTML = "";
-        // angular.element(re).append($compile(text)($scope));
       }
 
       $scope.nextPage = function(page) {
-        // console.log(page);
-        // console.log(text_store);
-        // console.log('next', page);
         curr_list_page = page;
-        // if (page <= text_store.length) {
-        //   $scope.prePage(page);
-        // }
-        // else {
           $scope.loading = true;
           var url = "http://rmali.us-east-2.elasticbeanstalk.com/next?"+"token="+data_final[page-2].token;
           $http.get(url)
           .then(function(response) {
             if (response.statusText == "OK") {
               var data = response.data;
-              // console.log(data);
               $scope.loading = false;
               getTable(data, page);
             }
             else {
               $scope.errorDisplay();
             }
-          })
+          }).catch(angular.noop);
       }
       var input1 = document.getElementById('loc3');
       var input2 = document.getElementById('start');
