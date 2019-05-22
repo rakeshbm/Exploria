@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const csp = require('helmet-csp');
 var session = require('express-session');
 var validator = require('express-validator');
+require('dotenv').config();
 
 app.set('trust proxy', 1);
 
@@ -51,20 +52,20 @@ app.get('/next', (req, res) => {
   res.setHeader('Content-Type', "application/json");
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  var bd = new EventEmitter();
+  var nextPage = new EventEmitter();
   var token = req.query.token;
-  var url3 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken="+token+"&key=AIzaSyAiR9M-WgtlwdnVInIPg6KBs96qoFf1tS4";
-  https.get(url3, res3 => {
-    res3.setEncoding("utf8");
+  var url = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?pagetoken="+token+"&key="+process.env.GOOGLE_API_KEY;
+  https.get(url, res => {
+    res.setEncoding("utf8");
     var html = "";
     var tmp = {};
-    res3.on("data", data => {
+    res.on("data", data => {
       html += data;
     });
-    res3.on("end", () => {
+    res.on("end", () => {
       html = JSON.parse(html);
-      var resu = html.results;
-      var length = resu.length;
+      var results = html.results;
+      var length = results.length;
       tmp['places'] = [];
       tmp['token'] = "";
       if (html.next_page_token != 'undefined') {
@@ -78,33 +79,33 @@ app.get('/next', (req, res) => {
         tmp.places[i]['place_id'] = resu[i]['place_id'];
         tmp.places[i]['location'] = resu[i]['geometry']['location'];
       }
-      bd.result = tmp;
-      bd.emit('update');
+      nextPage.result = tmp;
+      nextPage.emit('update');
     })
   })
-  bd.on('update', function() {
-    res.send(bd.result);
+  nextPage.on('update', function() {
+    res.send(nextPage.result);
   });
-})
+});
 
 app.get('/yelp', (req, res) => {
   res.setHeader('Content-Type', "application/json");
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  var bd = new EventEmitter();
-  var que = req.query;
-  var name = que.name;
-  var addr1 = que.address1;
-  var addr2 = que.address2;
-  var city = que.city;
-  var state = que.state;
-  var country = que.country;
+  var yelpPage = new EventEmitter();
+  var query = req.query;
+  var name = query.name;
+  var addr1 = query.address1;
+  var addr2 = query.address2;
+  var city = query.city;
+  var state = query.state;
+  var country = query.country;
   var headers = {
     'Access-Control-Allow-Origin': 'http://localhost:8081/',
-    'Authorization': 'Bearer Qy-YxhQ8MycJw68-woih7f5YG9CuCiWpyQsau32mLiYECsh3eLM5cXb_TzMFrDbKRrPZl2abzrq2D51tsKUOiifA6XGontfXj2zj-DHjIabW2m8fYLE_EOmOyEmZXHYx'
+    'Authorization': 'Bearer '+ process.env.YELP_KEY
   };
 
-  var apiKey = "Qy-YxhQ8MycJw68-woih7f5YG9CuCiWpyQsau32mLiYECsh3eLM5cXb_TzMFrDbKRrPZl2abzrq2D51tsKUOiifA6XGontfXj2zj-DHjIabW2m8fYLE_EOmOyEmZXHYx";
+  var apiKey = process.env.YELP_API_KEY;
   const yelp = require('yelp-fusion');
 
   const client = yelp.client(apiKey);
@@ -116,11 +117,6 @@ app.get('/yelp', (req, res) => {
     state: state,
     country: country
   }).then(response => {
-    // response.setHeader('Content-Type', "application/json");
-    // response.header("Access-Control-Allow-Origin", "*");
-    // response.header("Access-Control-Allow-Headers", "X-Requested-With");
-    // console.log(response.jsonBody.businesses);
-    //console.log(response);
     if (response.jsonBody.businesses.length != 0) {
       yelpReviews(response.jsonBody.businesses[0].id);
     }
@@ -132,95 +128,75 @@ app.get('/yelp', (req, res) => {
   });
 
   function yelpReviews(id) {
-    const yelpR = require('yelp-fusion');
-    const clientR = yelpR.client(apiKey);
-    clientR.reviews(id).then(responseR => {
-      // console.log(responseR);
-      // responseR.setHeader('Content-Type', "application/json");
-      // responseR.header("Access-Control-Allow-Origin", "*");
-      // responseR.header("Access-Control-Allow-Headers", "X-Requested-With");
-    // console.log(responseR.jsonBody.reviews);
-    bd.result = responseR.jsonBody.reviews;
-    //console.log(bd.result);
-    bd.emit('update');
+    const yelp = require('yelp-fusion');
+    const clientReviews = yelp.client(apiKey);
+    clientReviews.reviews(id).then(response => {
+    yelpPage.result = response.jsonBody.reviews;
+    yelpPage.emit('update');
     }).catch(e => {
-      // console.log(e);
       res.send(JSON.stringify("error"));
     });
   }
-  bd.on('update', function() {
-    res.send(bd.result);
+  yelpPage.on('update', function() {
+    res.send(yelpPage.result);
   });
 })
 
 app.get('/messages', (req, res) => {
-  // console.log(req.body)
-  // var que = url.parse(req.url, true).query;
   res.setHeader('Content-Type', "application/json");
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "X-Requested-With");
-  var que = req.query;
-  var keyword = que.keyword;
-  var category = que.category.toLowerCase();
-  var distance = (que.distance == 'undefined') ? 16093.44 : que.distance*1609.344;
-  var location = que.location;
-  var lon = parseFloat(que.lon);
-  var lat = parseFloat(que.lat);
-  var bd = new EventEmitter();
-  // console.log(location);
-  // console.log(lon);
-  // console.log(lat);
-  // var ob = null;
+  var query = req.query;
+  var keyword = query.keyword;
+  var category = query.category.toLowerCase();
+  var distance = (query.distance == 'undefined') ? 16093.44 : query.distance*1609.344;
+  var location = query.location;
+  var lon = parseFloat(query.lon);
+  var lat = parseFloat(query.lat);
+  var searchPage = new EventEmitter();
   if (location != "undefined") {
-    // console.log("unde");
     unde(distance, category, keyword);
   }
   else {
-    // console.log("de");
     de(lat, lon, distance, category, keyword);
   }
 
   function de(lat, lon, distance, category, keyword) {
-    var url2 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lon+"&radius="+distance+"&type="+category+"&keyword="+keyword+"&key=AIzaSyAiR9M-WgtlwdnVInIPg6KBs96qoFf1tS4";
-    // var url2 = "https://maps.googleapis.com/maps/api/geocode/json?address="+location+"&key=AIzaSyAa82JVs4PT58-oozGACpFLBvuoQbA7IWM";
+    var url2 = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+lat+","+lon+"&radius="+distance+"&type="+category+"&keyword="+keyword+"&key="+process.env.GOOGLE_API_KEY;
     https.get(url2, res2 => {
-      // console.log(url2);
       res2.setEncoding("utf8");
-      // res2.setHeader('Content-Type', "application/json");
-      // res2.header("Access-Control-Allow-Origin", "*");
-      // res2.header("Access-Control-Allow-Headers", "X-Requested-With");
-      var rr = "";
+      var tmp = "";
       res2.on("data", data => {
-        rr += data;
+        tmp += data;
       });
       res2.on("end", () => {
-        rr = JSON.parse(rr);
-        var resu = rr.results;
-        var length = resu.length;
+        tmp = JSON.parse(tmp);
+        var results = tmp.results;
+        var length = results.length;
         var result = [];
         result = {};
         result['token'] = "";
         result['places'] = [];
 
-        if (rr.next_page_token != 'undefined') {
-          result['token'] = rr.next_page_token;
+        if (tmp.next_page_token != 'undefined') {
+          result['token'] = tmp.next_page_token;
         }
         for (var i = 0; i < length; i++) {
           result.places[i] = {};
-          result.places[i]['icon'] = resu[i]['icon'];
-          result.places[i]['name'] = resu[i]['name'];
-          result.places[i]['vicinity'] = resu[i]['vicinity'];
-          result.places[i]['place_id'] = resu[i]['place_id'];
-          result.places[i]['location'] = resu[i]['geometry']['location'];
+          result.places[i]['icon'] = results[i]['icon'];
+          result.places[i]['name'] = results[i]['name'];
+          result.places[i]['vicinity'] = results[i]['vicinity'];
+          result.places[i]['place_id'] = results[i]['place_id'];
+          result.places[i]['location'] = results[i]['geometry']['location'];
         }
-        bd.result = result;
-        bd.emit('update');
+        searchPage.result = result;
+        searchPage.emit('update');
       })
     })
   }
 
   function unde(distance, category, keyword) {
-    var url1 = "https://maps.googleapis.com/maps/api/geocode/json?address="+location+"&key=AIzaSyAiR9M-WgtlwdnVInIPg6KBs96qoFf1tS4";
+    var url1 = "https://maps.googleapis.com/maps/api/geocode/json?address="+location+"&key="+process.env.GOOGLE_API_KEY;
     https.get(url1, res1 => {
       res1.setEncoding("utf8");
       var body = "";
@@ -232,12 +208,12 @@ app.get('/messages', (req, res) => {
         var lon = parsefloat(body.results[0].geometry.location.lng);
         var lat = parseFloat(body.results[0].geometry.location.lat);
         de(lat, lon, distance, category, keyword);
-      })
-    })
+      });
+    });
   }
 
-  bd.on('update', function() {
-    res.send(bd.result);
+  searchPage.on('update', function() {
+    res.send(searchPage.result);
   })
 
 })
