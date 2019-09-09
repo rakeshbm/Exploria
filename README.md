@@ -1,4 +1,4 @@
-# Travel and Entertainment Search Web Application
+# Exploria - *find your next stop*
 
 A responsive serverless webpage that allows users to search for places using the Google Places API and display the results on the same page below the form. The details of the selected place includes an info table, photos of the place, map and route search form, and reviews.
 The webpage also supports adding places to and removing places from favorites list and posting place info to Twitter.
