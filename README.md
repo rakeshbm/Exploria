@@ -20,3 +20,46 @@ Implementation details:
 - Yelp Fusion API is used to display Yelp reviews of the place.
 - HTML5 local storage is used to save and remove favorite places.
 - The sliding effect animation is achieved using AngularJS.
+
+
+### Snapshots:
+
+
+Search form:
+<kbd><img src = "images/search.PNG"></kbd>
+
+
+Search results:
+<kbd><img src = "images/results.PNG"></kbd>
+
+
+Selected place info:
+<kbd><img src = "images/Place.PNG"></kbd>
+
+
+Place photos:
+<kbd><img src = "images/photos.PNG"></kbd>
+
+
+Navigation details:
+<kbd><img src = "images/Navigation.PNG"></kbd>
+
+
+Place reviews:
+<kbd><img src = "images/Reviews.PNG"></kbd>
+
+
+Tweet feature:
+<kbd><img src = "images/Twitter.PNG"></kbd>
+
+
+Place hours:
+<kbd><img src = "images/Timings.PNG"></kbd>
+
+
+Favorites:
+<kbd><img src = "images/Favorites.PNG"></kbd>
+
+
+Form validation:
+<kbd><img src = "images/validation.PNG"></kbd>
