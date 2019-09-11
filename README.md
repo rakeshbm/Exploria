@@ -26,40 +26,59 @@ Implementation details:
 
 
 Search form:
+
 <kbd><img src = "Images/search.PNG"></kbd>
 
 
+
 Search results:
+
 <kbd><img src = "Images/results.PNG"></kbd>
 
 
+
 Selected place info:
+
 <kbd><img src = "Images/Place.PNG"></kbd>
 
 
+
 Place photos:
+
 <kbd><img src = "Images/photos.PNG"></kbd>
 
 
+
 Navigation details:
+
 <kbd><img src = "Images/Navigation.PNG"></kbd>
 
 
+
 Place reviews:
+
 <kbd><img src = "Images/Reviews.PNG"></kbd>
 
 
+
 Tweet feature:
+
 <kbd><img src = "Images/Twitter.PNG"></kbd>
 
 
+
 Place hours:
+
 <kbd><img src = "Images/Timings.PNG"></kbd>
 
 
+
 Favorites:
-<kbd><img src = "Images/Favorites.PNG"></kbd>
+
+<kbd><img src = "Images/favorites.PNG"></kbd>
+
 
 
 Form validation:
+
 <kbd><img src = "Images/validation.PNG"></kbd>
